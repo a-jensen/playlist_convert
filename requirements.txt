@@ -1,0 +1,7 @@
+click>=8.1
+spotipy>=2.23
+pydantic>=2.6
+pydantic-settings>=2.2
+python-dotenv>=1.0
+rapidfuzz>=3.6
+rich>=13.7

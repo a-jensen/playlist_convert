@@ -1,13 +1,13 @@
 # playlist-convert
 
-A command-line tool to list and convert playlists between streaming music services.
+A command-line tool to list, convert, and create playlists between streaming music services.
 
 **Supported services:**
 
-| Service | List playlists | List songs | Convert from | Convert to |
-|---|---|---|---|---|
-| Apple Music | yes | yes | yes | no* |
-| Spotify | yes | yes | yes | yes |
+| Service | List playlists | List songs | Convert from | Convert to | Create playlist |
+|---|---|---|---|---|---|
+| Apple Music | yes | yes | yes | no* | no* |
+| Spotify | yes | yes | yes | yes | yes |
 
 \* Writing to Apple Music requires an Apple Developer account (MusicKit API). Reading uses the local macOS Music library — no account needed.
 
@@ -126,6 +126,57 @@ Use `list-playlists` to find playlist IDs.
 playlist-convert list-songs --service apple-music --playlist-id 12345
 playlist-convert list-songs --service spotify --playlist-id 37i9dQZF1DXcBWIGoYBM5M
 playlist-convert list-songs --service spotify --playlist-id 37i9dQZF1DXcBWIGoYBM5M --output json
+```
+
+---
+
+### `create`
+
+Create a playlist on a service from a YAML file.
+
+```bash
+playlist-convert create --service <service> --file <playlist.yaml>
+```
+
+**Options:**
+
+| Flag | Description |
+|---|---|
+| `-s`, `--service` | `spotify` or `apple-music` (required) |
+| `-f`, `--file` | Path to YAML file defining the playlist (required) |
+| `-n`, `--name` | Playlist name — overrides the `name` field in the YAML file |
+| `--dry-run` | Show matching results without creating anything |
+| `-o`, `--output` | `table` (default) or `json` |
+
+**YAML file format:**
+
+```yaml
+name: My Playlist
+description: Optional description
+tracks:
+  - title: Bohemian Rhapsody
+    artist: Queen
+  - title: Hotel California
+    artist: Eagles
+    album: Hotel California   # album is optional
+```
+
+`name` and `tracks` are required. Each track requires `title` and `artist`; `album` is optional.
+
+**Examples:**
+
+```bash
+# Preview matches before creating
+playlist-convert create --service spotify --file playlist.yaml --dry-run
+
+# Create the playlist
+playlist-convert create --service spotify --file playlist.yaml
+
+# Override the playlist name from the YAML
+playlist-convert create --service spotify --file playlist.yaml --name "Summer Jams"
+
+# Machine-readable output
+playlist-convert create --service spotify --file playlist.yaml --dry-run --output json
 ```
 
 ---
@@ -270,7 +321,7 @@ playlist_convert/
 ├── requirements.txt
 ├── .env.example
 └── playlist_convert/
-    ├── cli.py              # Click CLI — list-playlists, list-songs, convert
+    ├── cli.py              # Click CLI — list-playlists, list-songs, convert, create
     ├── config.py           # Settings loaded from .env
     ├── matcher.py          # ISRC + fuzzy song matching logic
     ├── models.py           # Track, Playlist dataclasses
@@ -290,3 +341,4 @@ playlist_convert/
 | `pydantic-settings` | Type-safe settings from env / `.env` file |
 | `rapidfuzz` | Fast fuzzy string matching for song title/artist |
 | `rich` | Terminal tables and progress display |
+| `PyYAML` | YAML playlist file parsing |

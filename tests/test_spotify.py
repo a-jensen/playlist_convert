@@ -223,21 +223,19 @@ class TestSearchTrackByIsrc:
 class TestCreatePlaylist:
     def test_returns_new_playlist_id(self):
         provider, mock_sp = _make_provider()
-        mock_sp.user_playlist_create.return_value = {"id": "new_pl_id"}
+        mock_sp._post.return_value = {"id": "new_pl_id"}
         result = provider.create_playlist("My New Playlist", "A description")
         assert result == "new_pl_id"
-        mock_sp.user_playlist_create.assert_called_once_with(
-            user="test_user",
-            name="My New Playlist",
-            public=False,
-            description="A description",
+        mock_sp._post.assert_called_once_with(
+            "me/playlists",
+            payload={"name": "My New Playlist", "public": False, "description": "A description"},
         )
 
     def test_creates_with_empty_description(self):
         provider, mock_sp = _make_provider()
-        mock_sp.user_playlist_create.return_value = {"id": "pl_id"}
+        mock_sp._post.return_value = {"id": "pl_id"}
         provider.create_playlist("Minimal")
-        mock_sp.user_playlist_create.assert_called_once()
+        mock_sp._post.assert_called_once()
 
 
 class TestAddTracks:

@@ -160,11 +160,9 @@ class SpotifyProvider(BaseProvider):
         return tracks
 
     def create_playlist(self, name: str, description: str = "") -> str:
-        result = self._client.user_playlist_create(
-            user=self._user_id,
-            name=name,
-            public=False,
-            description=description,
+        result = self._client._post(
+            "me/playlists",
+            payload={"name": name, "public": False, "description": description},
         )
         return result["id"]
 

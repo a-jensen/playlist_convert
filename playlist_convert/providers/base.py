@@ -23,7 +23,9 @@ class RateLimitError(PlaylistConvertError):
     """Provider rate limit hit."""
 
     def __init__(self, message: str, retry_after: int = 0) -> None:
-        super().__init__(message)
+        retry_hrs = retry_after / 3600
+        suffix = f" Retry will occur after: {retry_hrs:.1f} hrs" if retry_after else ""
+        super().__init__(message + suffix)
         self.retry_after = retry_after
 
 

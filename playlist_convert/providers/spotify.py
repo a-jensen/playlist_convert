@@ -1,3 +1,5 @@
+import time
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
@@ -110,6 +112,7 @@ class SpotifyProvider(BaseProvider):
         return tracks
 
     def search_track(self, title: str, artist: str) -> list[Track]:
+        time.sleep(0.2)
         query = f"track:{title} artist:{artist}"
         try:
             results = self._client.search(q=query, type="track", limit=5)
@@ -138,6 +141,7 @@ class SpotifyProvider(BaseProvider):
 
     def search_track_by_isrc(self, isrc: str) -> list[Track]:
         """Search by ISRC for high-confidence exact matching."""
+        time.sleep(0.2)
         try:
             results = self._client.search(q=f"isrc:{isrc}", type="track", limit=5)
         except spotipy.SpotifyException:
